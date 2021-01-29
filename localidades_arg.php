@@ -33,7 +33,6 @@ $provincias = [
 ];
 
 foreach ($provincias as $key => $value) {
-    echo 'Procesando provincia: ' . $provincias[$key] . '<br>';
     $curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
     // https://www.php.net/manual/es/function.curl-setopt.php
     $options = [
