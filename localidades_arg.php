@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL | E_STRICT);
+mb_internal_encoding('UTF-8');
+
 $time = microtime(true);
 
 $provincias = [
@@ -7,7 +10,7 @@ $provincias = [
     'B' => 'Buenos Aires',
     'C' => 'Ciudad Autónoma de Buenos Aires',
     'D' => 'San Luis',
-    'E' => 'Entre Rios',
+    'E' => 'Entre Ríos',
     'F' => 'La Rioja',
     'G' => 'Santiago del Estero',
     'H' => 'Chaco',
@@ -30,6 +33,7 @@ $provincias = [
 ];
 
 foreach ($provincias as $key => $value) {
+    echo 'Procesando provincia: ' . $provincias[$key] . '<br>';
     $curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
     // https://www.php.net/manual/es/function.curl-setopt.php
     $options = [
@@ -48,11 +52,11 @@ foreach ($provincias as $key => $value) {
     $url = 'https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php';
     $curl = curl_init($url);
     curl_setopt_array($curl, $options);
-    $response = curl_exec($curl);
+    $data = curl_exec($curl);
     curl_close($curl);
-    
+
     $handle = fopen('por-provincia/' . $provincias[$key] . '.json', 'w');
-    fwrite($handle, $response);
+    fwrite($handle, $data);
     fclose($handle);
 }
 
