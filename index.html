@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Códigos Postales</title>
+
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+    <style>
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Códigos Postales de Localidades Argentinas</h1>
+    </header>
+
+    <main>
+        <!-- Select Provincia -->
+        <div class="mb-3">
+            <label for="provincia">Provincia:</label>
+            <select name="provincia" id="provincia" class="" style="width: 100%;">
+                <option value="">- Seleccione una provincia -</option>
+                <option value="B">BUENOS AIRES</option>
+                <option value="K">CATAMARCA</option>
+                <option value="H">CHACO</option>
+                <option value="U">CHUBUT</option>
+                <option value="C">CIUDAD AUTÓNOMA DE BUENOS AIRES</option>
+                <option value="X">CÓRDOBA</option>
+                <option value="W">CORRIENTES</option>
+                <option value="E">ENTRE RÍOS</option>
+                <option value="P">FORMOSA</option>
+                <option value="Y">JUJUY</option>
+                <option value="L">LA PAMPA</option>
+                <option value="F">LA RIOJA</option>
+                <option value="M">MENDOZA</option>
+                <option value="N">MISIONES</option>
+                <option value="Q">NEUQUÉN</option>
+                <option value="R">RÍO NEGRO</option>
+                <option value="A">SALTA</option>
+                <option value="J">SAN JUAN</option>
+                <option value="D">SAN LUIS</option>
+                <option value="Z">SANTA CRUZ</option>
+                <option value="S">SANTA FE</option>
+                <option value="G">SANTIAGO DEL ESTERO</option>
+                <option value="V">TIERRA DEL FUEGO</option>
+                <option value="T">TUCUMÁN</option>
+            </select>
+        </div>
+
+        <!-- Select Localidad -->
+        <div class="mb-3">
+            <label for="localidad">Localidad:</label>
+            <select name="localidad" id="localidad" class="" style="width: 100%;">
+                <option value="">- Seleccione una localidad -</option>
+            </select>
+        </div>
+
+        <!-- Datos de salida -->
+        <div class="text-center mt-5" id="output"></div>
+    </main>
+
+    <script src="js/select2.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
