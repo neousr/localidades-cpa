@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Este archivo se debe ejecutar de forma independiente para capturar
+ * todas las localidades por provincia para Argentina
+ */
+
 error_reporting(E_ALL | E_STRICT);
 mb_internal_encoding('UTF-8');
 

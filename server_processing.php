@@ -1,5 +1,10 @@
 <?php
 
+if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+    header('Location: index.php');
+    exit;
+}
+
 $provincia = $_POST['provincia'];
 
 $curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $provincia;
