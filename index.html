@@ -16,19 +16,24 @@
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
-    <style>
-        .mb-3 {
-            margin-bottom: 1.5rem;
-        }
-    </style>
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
+    <!-- Header -->
     <header>
         <h1>Códigos Postales de Localidades Argentinas</h1>
+        <p>Para utilizar la aplicación siga los siguientes pasos:</p>
+
+        <ol>
+            <li>Seleccione una provincia de la lista de provincias.</li>
+            <li>Escriba el nombre de la localidad en la lista de localidades y seleccione.</li>
+        </ol>
     </header>
 
+    <!-- Main -->
     <main>
         <!-- Select Provincia -->
         <div class="mb-3">
@@ -72,7 +77,15 @@
 
         <!-- Datos de salida -->
         <div class="text-center mt-5" id="output"></div>
+
     </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 1.5rem;color: #6c757d;">
+        <p>
+            <small>Copyright &copy; 2020 | Powered by Julio Cesar</small>
+        </p>
+    </footer>
 
     <script src="js/select2.js"></script>
     <script src="js/script.js"></script>
