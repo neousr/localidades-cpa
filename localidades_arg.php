@@ -41,6 +41,7 @@ foreach ($provincias as $key => $value) {
     $curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
     // https://www.php.net/manual/es/function.curl-setopt.php
     $options = [
+        // CURLOPT_HTTPHEADER Un array de campos a configurar para el header HTTP, en el formato: array('Content-type: text/plain', 'Content-length: 100')
         CURLOPT_HTTPHEADER => [
             'Accept: application/json, text/javascript, */*; q=0.01'
         ],
@@ -52,7 +53,7 @@ foreach ($provincias as $key => $value) {
         CURLOPT_POSTFIELDS => $curlData,
         CURLOPT_VERBOSE => 1
     ];
-    // CURLOPT_HTTPHEADER Un array de campos a configurar para el header HTTP, en el formato: array('Content-type: text/plain', 'Content-length: 100')
+    
     $url = 'https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php';
     $curl = curl_init($url);
     curl_setopt_array($curl, $options);
