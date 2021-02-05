@@ -37,8 +37,20 @@ $provincias = [
     'Z' => 'Santa Cruz'
 ];
 
+define('PATH', dirname(__FILE__) . '\por-provincia');
+
+if (file_exists(PATH)) {
+    $files  = scandir(PATH);
+    if ( count($files) > 2 ) {
+        array_map('unlink', glob(PATH . '\*.json'));
+    }
+    rmdir(PATH);
+}
+
+mkdir(PATH);
+
 foreach ($provincias as $key => $value) {
-    $curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
+    $data = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
     // https://www.php.net/manual/es/function.curl-setopt.php
     $options = [
         // CURLOPT_HTTPHEADER Un array de campos a configurar para el header HTTP, en el formato: array('Content-type: text/plain', 'Content-length: 100')
@@ -50,7 +62,7 @@ foreach ($provincias as $key => $value) {
         CURLOPT_POST => 1,
         // Si pasamos un array a CURLOPT_POSTFIELDS codificará los datos como multipart/form-data, 
         // pero si pasamos una cadena URL-encoded codificará los datos como application/x-www-form-urlencoded. 
-        CURLOPT_POSTFIELDS => $curlData,
+        CURLOPT_POSTFIELDS => $data,
         CURLOPT_VERBOSE => 1
     ];
     
@@ -60,7 +72,7 @@ foreach ($provincias as $key => $value) {
     $data = curl_exec($curl);
     curl_close($curl);
 
-    $handle = fopen('por-provincia/' . $provincias[$key] . '.json', 'w');
+    $handle = fopen(PATH . '/' . $provincias[$key] . '.json', 'w');
     fwrite($handle, $data);
     fclose($handle);
 }
