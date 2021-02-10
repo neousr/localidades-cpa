@@ -37,21 +37,20 @@ $provincias = [
     'Z' => 'Santa Cruz'
 ];
 
-define('PATH', dirname(__FILE__) . '/por-provincia');
+define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia/');
 
 /**
- * Siempre eliminará la carpeta por-provincia y todos los archivos json
- * para este ejemplo solo se eliminan los archivos .json
+ * Siempre eliminará la carpeta por-provincia y todos los archivos json que contiene
  */
-if (file_exists(PATH)) {
-    $files = scandir(PATH);
+if (file_exists(DOCUMENT_ROOT)) {
+    $files = scandir(DOCUMENT_ROOT);
     if ( count($files) > 2 ) {
-        array_map('unlink', glob(PATH . '/*.json'));
+        array_map('unlink', glob(DOCUMENT_ROOT . '*.json'));
     }
-    rmdir(PATH);
+    rmdir(DOCUMENT_ROOT);
 }
 
-mkdir(PATH);
+mkdir(DOCUMENT_ROOT);
 
 foreach ($provincias as $key => $value) {
     $data = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
@@ -76,7 +75,7 @@ foreach ($provincias as $key => $value) {
     $data = curl_exec($curl);
     curl_close($curl);
 
-    $handle = fopen(PATH . '/' . $provincias[$key] . '.json', 'w');
+    $handle = fopen(DOCUMENT_ROOT . $provincias[$key] . '.json', 'w');
     fwrite($handle, $data);
     fclose($handle);
 }

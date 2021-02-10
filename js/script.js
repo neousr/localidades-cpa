@@ -23,13 +23,17 @@ function handleChangeProvincia(selectObj, objEvent) {
     if (selectLocalidad) {
         // Solo se habilitará cuando el índice seleccionado sea distinto de cero
         selectLocalidad.disabled = true;
-        // Removemos opciones si las hay
+        // Removemos las opciones actuales del select de localidades
         removeOptions(selectLocalidad);
-        // Removemos datos de salida, si los hay
+        // Removemos los datos de muestra, si los hay
         output('');
+        // Obtenemos el índice de la opción seleccionada
         const selectedIndex = selectObj.selectedIndex;
+        // Sí el índice es mayor a cero
         if (selectedIndex > 0) {
+            // Obtenemos el valor (caracter alfabético) de la opción seleccionada
             const value = selectObj.options[selectedIndex].value;
+            // Validamos el caracter alfabético
             if (validCharacter(value)) {
                 // Obtenemos el nombre de la Provincia para la muestra
                 nombreProvincia = selectObj.options[selectedIndex].textContent;
@@ -37,7 +41,7 @@ function handleChangeProvincia(selectObj, objEvent) {
                 selectLocalidad.disabled = false;
                 const url = 'server_processing.php';
                 const formData = "provincia=" + encodeURIComponent(value);
-                // Solicitar datos al servidor
+                // Enviar solicitud al servidor
                 sendHttpRequest('POST', url, formData, loadLocalities);
             }
         }
@@ -48,6 +52,7 @@ function handleChangeProvincia(selectObj, objEvent) {
 function loadLocalities(response) {
     // Parseamos la respuesta del servidor
     data = JSON.parse(response);
+    // Creamos opciones nuevas
     createOptions(data, selectLocalidad);
 }
 
@@ -89,7 +94,7 @@ function createOptions(data, selectObj) {
     selectObj.appendChild(fragment);
 }
 
-// Remueve todas las opciones excepto el índice 0 (osea no remueve la primera opción)
+// Remueve todas las opciones excepto el índice 0 (el marcador de posición)
 function removeOptions(selectObj) {
     let len = selectObj.options.length;
     while (len-- > 1) selectObj.remove(1);
@@ -126,7 +131,7 @@ function sendHttpRequest(method, url, data, callback) {
 
 // Validamos el caracter que forma parte del código 33166-2
 function validCharacter(c) {
-    // Letras mayúsculas, no minúsculas
+    // Solo letras mayúsculas son permitidas
     const re = /^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/; // No incluidas => I,Ñ,O
     return re.test(c);
 }
