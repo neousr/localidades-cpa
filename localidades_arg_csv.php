@@ -45,7 +45,7 @@ define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provin
 if (file_exists(DOCUMENT_ROOT)) {
     $files = scandir(DOCUMENT_ROOT);
     if ( count($files) > 2 ) {
-        // Removemos todos los .json
+        // Removemos todos los .csv
         array_map('unlink', glob(DOCUMENT_ROOT . '*.csv'));
     }
     // Removemos el directorio
