@@ -86,8 +86,8 @@ foreach ($provincias as $key => $value) {
 
     $data = json_decode($response, true);
 
-    // id_localidad|nombre_localidad|código_postal
     $fp = fopen(DOCUMENT_ROOT . $provincias[$key] . '.csv', 'w');
+    // fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']); // Encabezados
     foreach ($data['localidades'] as $campos) {
         fputcsv($fp, $campos);
     }
