@@ -1,0 +1,10 @@
+Enlaces utilizados
+
+https://html.spec.whatwg.org/multipage/form-elements.html#the-select-element
+
+https://www.w3.org/TR/WCAG20-TECHS/client-side-script.html#SCR19
+
+https://www.iteramos.com/pregunta/31833/php-como-quitar-todos-los-no-imprimibles-de-caracteres-en-una-cadena
+
+Devolver todos los archivos json al estado anterior
+git checkout -- /c/xampp/htdocs/arg-localities/por-provincia/*.json

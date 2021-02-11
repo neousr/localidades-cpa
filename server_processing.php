@@ -5,6 +5,11 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     exit;
 }
 
+$regex = '/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/';
+if (!preg_match($regex, $_POST['provincia'])) {
+   exit;
+}
+
 $provincia = $_POST['provincia'];
 
 $curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $provincia;

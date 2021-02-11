@@ -1,5 +1,0 @@
-Enlaces utilizados
-
-https://html.spec.whatwg.org/multipage/form-elements.html#the-select-element
-
-https://www.w3.org/TR/WCAG20-TECHS/client-side-script.html#SCR19
