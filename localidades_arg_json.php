@@ -81,6 +81,7 @@ foreach ($provincias as $key => $value) {
     $curl = curl_init($url);
     curl_setopt_array($curl, $options);
     // https://www.iteramos.com/pregunta/31833/php-como-quitar-todos-los-no-imprimibles-de-caracteres-en-una-cadena
+    // $regex = /[^\x20-\x7E]/';
     $response .= preg_replace('/[^[:print:]]/', '', curl_exec($curl)) . '}';
     curl_close($curl);
 
