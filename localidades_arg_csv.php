@@ -40,7 +40,7 @@ $provincias = [
 define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-csv/');
 
 /**
- * Siempre eliminará la carpeta por-provincia y todos los archivos json que contiene
+ * Siempre eliminará la carpeta por-provincia-csv y todos los archivos csv que contiene
  */
 if (file_exists(DOCUMENT_ROOT)) {
     $files = scandir(DOCUMENT_ROOT);
@@ -52,7 +52,7 @@ if (file_exists(DOCUMENT_ROOT)) {
     rmdir(DOCUMENT_ROOT);
 }
 
-// Creamos el directorio
+// Creamos el directorio nuevamente
 mkdir(DOCUMENT_ROOT);
 
 foreach ($provincias as $key => $value) {
@@ -74,7 +74,7 @@ foreach ($provincias as $key => $value) {
         // Si pasamos un array a CURLOPT_POSTFIELDS codificará los datos como multipart/form-data, 
         // pero si pasamos una cadena URL-encoded codificará los datos como application/x-www-form-urlencoded. 
         CURLOPT_POSTFIELDS => $curlData,
-        CURLOPT_VERBOSE => 1
+        CURLOPT_VERBOSE => 1 // Para ver qué sucede
     ];
     
     $url = 'https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php';
@@ -88,7 +88,7 @@ foreach ($provincias as $key => $value) {
     $data = json_decode($response, true);
 
     $fp = fopen(DOCUMENT_ROOT . $provincias[$key] . '.csv', 'w');
-    // fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']); // Encabezados
+    // fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']); // Descomentar línea si necesita encabezados
     foreach ($data['localidades'] as $campos) {
         fputcsv($fp, $campos);
     }
