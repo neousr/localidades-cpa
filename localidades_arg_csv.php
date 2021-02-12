@@ -88,7 +88,8 @@ foreach ($provincias as $key => $value) {
     $data = json_decode($response, true);
 
     $fp = fopen(DOCUMENT_ROOT . $provincias[$key] . '.csv', 'w');
-    // fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']); // Descomentar línea si necesita encabezados
+    // Headers
+    fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']);
     foreach ($data['localidades'] as $campos) {
         fputcsv($fp, $campos);
     }
@@ -96,4 +97,5 @@ foreach ($provincias as $key => $value) {
 }
 
 $time = microtime(true) - $time;
+echo '<p>Mission Complete!!! :)';
 echo "<p>Tiempo total de ejecución: " . round($time, 3) . " segundos.";
