@@ -57,7 +57,6 @@ mkdir(DOCUMENT_ROOT);
 
 foreach ($provincias as $key => $value) {
     $curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
-    $response = '{"iso_31662":"AR-' . $key . '","provincia":"'. $provincias[$key] . '","localidades":';
     // https://www.php.net/manual/es/function.curl-setopt.php
     $options = [
         // CURLOPT_HTTPHEADER Un array de campos a configurar para el header HTTP, en el formato: array('Content-type: text/plain', 'Content-length: 100')
@@ -68,21 +67,23 @@ foreach ($provincias as $key => $value) {
             "Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
             "X-Requested-With: XMLHttpRequest"
         ],
+        // true para completar silenciosamente en lo que se refiere a las funciones cURL, equivalente a curl -s (silent mode).
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_POST => 1,
         // Si pasamos un array a CURLOPT_POSTFIELDS codificará los datos como multipart/form-data, 
         // pero si pasamos una cadena URL-encoded codificará los datos como application/x-www-form-urlencoded. 
         CURLOPT_POSTFIELDS => $curlData,
-        CURLOPT_VERBOSE => 1 // Para ver qué sucede
+        CURLOPT_VERBOSE => 1 // Para ver qué sucede en detalle
     ];
     
     $url = 'https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php';
     $curl = curl_init($url);
     curl_setopt_array($curl, $options);
     // https://www.iteramos.com/pregunta/31833/php-como-quitar-todos-los-no-imprimibles-de-caracteres-en-una-cadena
-    // $regex = /[^\x20-\x7E]/';
-    $response .= preg_replace('/[^[:print:]]/', '', curl_exec($curl)) . '}';
+    // https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex/
+    // $regex = '/[\x00-\x1F\x80-\xFF]/';
+    $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
     curl_close($curl);
 
     $data = json_decode($response, true);
@@ -90,12 +91,12 @@ foreach ($provincias as $key => $value) {
     $fp = fopen(DOCUMENT_ROOT . $provincias[$key] . '.csv', 'w');
     // Headers
     fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']);
-    foreach ($data['localidades'] as $campos) {
+    foreach ($data as $campos) {
         fputcsv($fp, $campos);
     }
     fclose($fp);
 }
 
 $time = microtime(true) - $time;
-echo '<p>Mission Complete!!! :)';
+echo "<p>Mission Complete!!! :)\n";
 echo "<p>Tiempo total de ejecución: " . round($time, 3) . " segundos.";

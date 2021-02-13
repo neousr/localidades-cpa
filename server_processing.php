@@ -5,14 +5,11 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     exit;
 }
 
-$regex = '/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/';
-if (!preg_match($regex, $_POST['provincia'])) {
+if (!preg_match('/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/', $_POST['provincia'])) {
    exit;
 }
 
-$provincia = $_POST['provincia'];
-
-$curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $provincia;
+$curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $_POST['provincia'];
 
 // https://www.php.net/manual/es/function.curl-setopt.php
 $options = [
@@ -30,13 +27,14 @@ $options = [
     // Si pasamos un array a CURLOPT_POSTFIELDS codificará los datos como multipart/form-data, 
     // pero si pasamos una cadena URL-encoded codificará los datos como application/x-www-form-urlencoded. 
     CURLOPT_POSTFIELDS => $curlData,
-    CURLOPT_VERBOSE => 1
+    CURLOPT_VERBOSE => 1 // Muestra en detalle lo que esta sucediendo.
 ];
 
-$url = 'https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php';
-$curl = curl_init($url);
+$curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
 curl_setopt_array($curl, $options);
-$response = preg_replace('/[^[:print:]]/', '', curl_exec($curl));
+// https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex/
+// $regex = '/[\x00-\x1F\x80-\xFF]/'; // otra alternativa
+$response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
 curl_close($curl);
 
 echo $response;
