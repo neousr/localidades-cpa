@@ -10,4 +10,3 @@ CREATE TABLE localidad (
     id_provincia INTEGER NOT NULL,
     FOREIGN KEY (id_provincia) REFERENCES provincia (id_provincia)
 );
-CREATE INDEX idx_localidad_id_provincia ON localidad(nombre, id_provincia);

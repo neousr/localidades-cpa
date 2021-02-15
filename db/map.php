@@ -1,6 +1,6 @@
 <?php
 /**
- * Este archivo toma los archivos json y los mapea a la base de datos sqlite
+ * Mapea los archivos json a la base de datos SQlite (archivo db.db)
  */
 $time = microtime(true);
 require_once 'Db.php';
@@ -39,15 +39,15 @@ foreach ($provincias as $id_provincia => $provincia) {
         // begin the transaction
         $conn->beginTransaction();
         foreach ($jsonData['localidades'] as $value) {
-            $id_localidad = $value['id'];
+            $id = $value['id'];
             $nombre = $value['nombre'];
             $cp = $value['cp'];
             $conn->exec("INSERT INTO localidad (id_localidad, nombre, cp, id_provincia) 
-            VALUES ('$id_localidad', '$nombre', '$cp', '$id_provincia');");
+            VALUES ('$id', '$nombre', '$cp', '$id_provincia');");
         }
         // commit the transaction
         $conn->commit();
-        echo "### Insertando localidades de: " . $provincia . " foreign key provincia: " . $id_provincia . "\n";
+        echo "### Inserting " . $provincia . " localities\n";
     } catch (PDOException $e) {
         // roll back the transaction if something failed
         $conn->rollback();
@@ -56,5 +56,5 @@ foreach ($provincias as $id_provincia => $provincia) {
 }
 $conn = null;
 $time = microtime(true) - $time;
-echo "### [Terminado]\n";
-echo "### Archivo ejecutado en: " . round($time, 3) . " segundos.";
+echo "### Complete\n";
+echo "### Execution time: " . round($time, 3) . " seconds.";
