@@ -129,7 +129,7 @@ function sendHttpRequest(method, url, data, callback) {
     xhr.send(data);
 }
 
-// Validamos el caracter que forma parte del código 33166-2
+// Validamos el caracter que forma parte del código 3166-2
 function validCharacter(c) {
     // Solo letras mayúsculas son permitidas
     const re = /^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/; // No incluidas => I,Ñ,O

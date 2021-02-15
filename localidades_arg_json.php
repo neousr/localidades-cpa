@@ -39,9 +39,7 @@ $provincias = [
 
 define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-json/');
 
-/**
- * Siempre eliminará la carpeta por-provincia-json y todos los archivos json que contiene
- */
+// Siempre eliminará el directorio por-provincia-json y todos los archivos json que contiene
 if (file_exists(DOCUMENT_ROOT)) {
     $files = scandir(DOCUMENT_ROOT);
     if ( count($files) > 2 ) {
@@ -55,41 +53,35 @@ if (file_exists(DOCUMENT_ROOT)) {
 // Creamos el directorio
 mkdir(DOCUMENT_ROOT);
 
-//
-$headerHttp = [
-    "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0",
-    "Accept: application/json, text/javascript, */*; q=0.01",
-    "Accept-Language: es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3",
-    "Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
-    "X-Requested-With: XMLHttpRequest"
+// Opciones cURL
+$options = [
+    // CURLOPT_HTTPHEADER Un array de campos a configurar para el header HTTP, en el formato: array('Content-type: text/plain', 'Content-length: 100')
+    CURLOPT_HTTPHEADER => [
+        "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0",
+        "Accept: application/json, text/javascript, */*; q=0.01",
+        "Accept-Language: es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3",
+        "Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
+        "X-Requested-With: XMLHttpRequest"
+    ],
+    // true para completar silenciosamente en lo que se refiere a las funciones cURL, equivalente a curl -s (silent mode).
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_POST => 1,
+    CURLOPT_VERBOSE => 1 // Muestra en detalle lo que esta sucediendo.
 ];
 
 foreach ($provincias as $key => $value) {
     $response = '{"iso_31662":"AR-' . $key . '","provincia":"'. $provincias[$key] . '","localidades":';
-    // https://www.php.net/manual/es/function.curl-setopt.php
-    $options = [
-        // CURLOPT_HTTPHEADER Un array de campos a configurar para el header HTTP, en el formato: array('Content-type: text/plain', 'Content-length: 100')
-        CURLOPT_HTTPHEADER => $headerHttp,
-        // true para completar silenciosamente en lo que se refiere a las funciones cURL, equivalente a curl -s (silent mode).
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_POST => 1,
-        // Si pasamos un array a CURLOPT_POSTFIELDS codificará los datos como multipart/form-data, 
-        // pero si pasamos una cadena URL-encoded codificará los datos como application/x-www-form-urlencoded. 
-        CURLOPT_POSTFIELDS => 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key,
-        CURLOPT_VERBOSE => 1 // Muestra en detalle lo que esta sucediendo.
-    ];
-
+    $options[CURLOPT_POSTFIELDS] = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
     $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
     curl_setopt_array($curl, $options);
-    // https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex/
     // $regex = '/[\x00-\x1F\x80-\xFF]/'; // '/[^\x20-\x7E]/';
     $response .= preg_replace('/[[:^print:]]/', '', curl_exec($curl)) . '}';
     curl_close($curl);
 
-    $handle = fopen(DOCUMENT_ROOT . $provincias[$key] . '.json', 'w');
-    fwrite($handle, $response);
-    fclose($handle);
+    $fp = fopen(DOCUMENT_ROOT . $provincias[$key] . '.json', 'w');
+    fwrite($fp, $response);
+    fclose($fp);
 }
 
 $time = microtime(true) - $time;
