@@ -41,6 +41,8 @@ function handleChangeProvincia(selectObj, objEvent) {
                 selectLocalidad.disabled = false;
                 const url = 'server_processing.php';
                 const formData = "provincia=" + encodeURIComponent(value);
+                // Init Loader
+                openLoader();
                 // Enviar solicitud al servidor
                 sendHttpRequest('POST', url, formData, loadLocalities);
             }
@@ -54,6 +56,7 @@ function loadLocalities(response) {
     data = JSON.parse(response);
     // Creamos opciones nuevas
     createOptions(data, selectLocalidad);
+    closeLoader();
 }
 
 // Inicializar el cambio de Localidad
@@ -134,4 +137,15 @@ function validCharacter(c) {
     // Solo letras mayúsculas son permitidas
     const re = /^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/; // No incluidas => I,Ñ,O
     return re.test(c);
+}
+
+
+const backdrop = document.querySelector('.backdrop');
+
+function closeLoader() {
+    if (backdrop) backdrop.style.display = "none";
+}
+
+function openLoader() {
+    if (backdrop) backdrop.style.display = "block";
 }

@@ -37,4 +37,4 @@ curl_setopt_array($curl, $options);
 $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
 curl_close($curl);
 
-echo $response;
+echo ($response) ? $response : 'null';

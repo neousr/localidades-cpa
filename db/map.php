@@ -1,6 +1,6 @@
 <?php
 /**
- * Mapea los archivos json a la base de datos SQlite (archivo db.db)
+ * Mapea los archivos json del directorio por-provincia-json a la base de datos SQlite (archivo db.db)
  */
 $time = microtime(true);
 require_once 'Db.php';
@@ -33,15 +33,15 @@ $provincias = [
 
 foreach ($provincias as $id_provincia => $provincia) {
     $json = file_get_contents('../por-provincia-json/' . $provincia . '.json');
-    $jsonData = json_decode($json, true);
+    $localidades = json_decode($json, true)['localidades'];
     try {
         $conn = Db::getInstance();
         // begin the transaction
         $conn->beginTransaction();
-        foreach ($jsonData['localidades'] as $value) {
-            $id = $value['id'];
-            $nombre = $value['nombre'];
-            $cp = $value['cp'];
+        foreach ($localidades as $localidad) {
+            $id = $localidad['id'];
+            $nombre = $localidad['nombre'];
+            $cp = $localidad['cp'];
             $conn->exec("INSERT INTO localidad (id_localidad, nombre, cp, id_provincia) 
             VALUES ('$id', '$nombre', '$cp', '$id_provincia');");
         }
