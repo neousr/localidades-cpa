@@ -5,10 +5,8 @@ const selectLocalidad = document.querySelector('select#localidad');
 var nombreProvincia, data;
 
 document.addEventListener('DOMContentLoaded', () => {
-
     initChangeProvincia();
     initChangeLocalidad();
-
 });
 
 // Inicializar el cambio de Provincia
@@ -40,11 +38,11 @@ function handleChangeProvincia(selectObj, objEvent) {
                 // Habilitamos el select de localidades
                 selectLocalidad.disabled = false;
                 const url = 'server_processing.php';
-                const formData = "provincia=" + encodeURIComponent(value);
+                const char = "provincia=" + encodeURIComponent(value);
                 // Init Loader
                 openLoader();
                 // Enviar solicitud al servidor
-                sendHttpRequest('POST', url, formData, loadLocalities);
+                sendHttpRequest('POST', url, char, loadLocalities);
             }
         }
     }
@@ -52,10 +50,14 @@ function handleChangeProvincia(selectObj, objEvent) {
 
 // Cargar las localidades
 function loadLocalities(response) {
-    // Parseamos la respuesta del servidor
-    data = JSON.parse(response);
-    // Creamos opciones nuevas
-    createOptions(data, selectLocalidad);
+    if (response !== 'Error') {
+        // Parseamos la respuesta del servidor
+        data = JSON.parse(response);
+        // Creamos opciones con los datos recuerados
+        createOptions(data, selectLocalidad);
+    } else {
+        console.log('Algo salió mal!');
+    }
     closeLoader();
 }
 
@@ -123,13 +125,19 @@ function sendHttpRequest(method, url, data, callback) {
     function processRequest() {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             if (xhr.status == 200) {
-                if (callback) callback(xhr.responseText);
+                callback(xhr.response);
+            } else {
+                console.log("There was a problem retrieving the data: " + xhr.statusText);
             }
         }
+    }
+    function handleError(e) {
+        console.log("Error: " + e + " Could not load url.");
     }
     xhr.open(method, url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime());
     if (data && !(data instanceof FormData)) xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send(data);
+    xhr.onerror = function (e) { return handleError(e); }
 }
 
 // Validamos el caracter que forma parte del código 3166-2

@@ -5,11 +5,27 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     exit;
 }
 
-if (!preg_match('/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/', $_POST['provincia'])) {
-   exit;
+$provincia = null;
+$error = null;
+
+if (array_key_exists('provincia', $_POST)) {
+    $provincia = $_POST['provincia'];
 }
 
-$curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $_POST['provincia'];
+// Validación del carácter del código 3166-2
+if ( !$provincia ) {
+    $error = 'El carácter del código 3166-2 es requerido.';
+} elseif ( !validateCharacter($provincia) ) {
+    $error = 'El carácter del código 3166-2 no es válido.';
+}
+
+if ( $error ) {
+    echo 'Error';
+    exit;
+}
+
+// Datos a enviar urlencoded
+$curlData = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $provincia;
 
 // https://www.php.net/manual/es/function.curl-setopt.php
 $options = [
@@ -27,14 +43,31 @@ $options = [
     // Si pasamos un array a CURLOPT_POSTFIELDS codificará los datos como multipart/form-data, 
     // pero si pasamos una cadena URL-encoded codificará los datos como application/x-www-form-urlencoded. 
     CURLOPT_POSTFIELDS => $curlData,
-    CURLOPT_VERBOSE => 1 // Muestra en detalle lo que esta sucediendo.
+    CURLOPT_VERBOSE => 1 // Muestra lo que esta sucediendo en todo momento.
 ];
 
+// Iniciamos la sesión cURL
 $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
+// Seteamos las opciones para una transferencia cURL
 curl_setopt_array($curl, $options);
 // https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex/
-// $regex = '/[\x00-\x1F\x80-\xFF]/'; // otra alternativa
+// $regex = '/[\x00-\x1F\x80-\xFF]/';
+// Establecemos la sesión cURL y removemos todo lo que no se pueda imprimir
 $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
+// Cerramos la sesión cURL
 curl_close($curl);
 
-echo ($response) ? $response : 'null';
+// Si no utilizamos ^print no podremos comparar en el caso que sea null la respuesta,
+// ya que los datos recuperados tiene caracteres no imprimibles
+if ($response && $response !== 'null') {
+    // Si la respuesta NO es un: Not Found
+    if ( !preg_match("/html/i", $response) ) {
+        echo $response;
+        exit;
+    }
+}
+echo 'Error';
+
+function validateCharacter($c) {
+    return preg_match('/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/', $c);
+}
