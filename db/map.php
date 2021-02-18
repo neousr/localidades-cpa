@@ -1,6 +1,6 @@
 <?php
 /**
- * Mapea los archivos json del directorio por-provincia-json a la base de datos SQlite (archivo db.db)
+ * Mapea los archivos json del directorio getLocalities/por-provincia-json a la base de datos SQlite (archivo db.db)
  */
 $time = microtime(true);
 require_once 'Db.php';
@@ -32,7 +32,7 @@ $provincias = [
 ];
 
 foreach ($provincias as $id_provincia => $provincia) {
-    $json = file_get_contents('../por-provincia-json/' . $provincia . '.json');
+    $json = file_get_contents('../getLocalities/por-provincia-json/' . $provincia . '.json');
     $localidades = json_decode($json, true)['localidades'];
     try {
         $conn = Db::getInstance();
