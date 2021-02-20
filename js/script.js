@@ -1,8 +1,10 @@
 const selectProvincia = document.querySelector('select#provincia');
 const selectLocalidad = document.querySelector('select#localidad');
+const backdrop = document.querySelector('.backdrop');
 
 // Variables globales
 var nombreProvincia, data;
+const url = 'server_processing.php';
 
 document.addEventListener('DOMContentLoaded', () => {
     initChangeProvincia();
@@ -25,24 +27,22 @@ function handleChangeProvincia(selectObj, objEvent) {
         removeOptions(selectLocalidad);
         // Removemos los datos de muestra, si los hay
         output('');
-        // Obtenemos el índice de la opción seleccionada
+        // Obtenemos del select de provincias el índice de la opción seleccionada
         const selectedIndex = selectObj.selectedIndex;
         // Sí el índice es mayor a cero
         if (selectedIndex > 0) {
             // Obtenemos el valor (caracter alfabético) de la opción seleccionada
-            const value = selectObj.options[selectedIndex].value;
+            const char = selectObj.options[selectedIndex].value;
             // Validamos el caracter alfabético
-            if (validCharacter(value)) {
+            if (validCharacter(char)) {
                 // Obtenemos el nombre de la Provincia para la muestra
                 nombreProvincia = selectObj.options[selectedIndex].textContent;
                 // Habilitamos el select de localidades
                 selectLocalidad.disabled = false;
-                const url = 'server_processing.php';
-                const char = "provincia=" + encodeURIComponent(value);
-                // Init Loader
-                openLoader();
                 // Enviar solicitud al servidor
-                sendHttpRequest('POST', url, char, loadLocalities);
+                sendHttpRequest('POST', url, "provincia=" + encodeURIComponent(char), loadLocalities);
+            } else {
+                alert('Lo sentimos, no podemos procesar su solicitud!');
             }
         }
     }
@@ -51,14 +51,13 @@ function handleChangeProvincia(selectObj, objEvent) {
 // Cargar las localidades
 function loadLocalities(response) {
     if (response !== 'Error') {
-        // Parseamos la respuesta del servidor
+        // Parseamos la respuesta del servidor en la variable data para uso posterior
         data = JSON.parse(response);
         // Creamos opciones con los datos recuerados
         createOptions(data, selectLocalidad);
     } else {
         console.log('Algo salió mal!');
     }
-    closeLoader();
 }
 
 // Inicializar el cambio de Localidad
@@ -114,6 +113,7 @@ function output(message) {
 // Enviar solicitud al servidor
 function sendHttpRequest(method, url, data, callback) {
     const xhr = getXhr();
+    openLoader();
     xhr.onreadystatechange = processRequest;
     function getXhr() {
         if (window.XMLHttpRequest) {
@@ -123,8 +123,8 @@ function sendHttpRequest(method, url, data, callback) {
         }
     }
     function processRequest() {
-        if (xhr.readyState == XMLHttpRequest.DONE) {
-            if (xhr.status == 200) {
+        if (xhr.readyState == xhr.DONE) {
+            if (xhr.status == 200 && xhr.response != null) {
                 callback(xhr.response);
             } else {
                 console.log("There was a problem retrieving the data: " + xhr.statusText);
@@ -135,6 +135,11 @@ function sendHttpRequest(method, url, data, callback) {
         console.log("Error: " + e + " Could not load url.");
     }
     xhr.open(method, url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime());
+    xhr.onprogress = function (e) { }
+    xhr.onloadend = function (e) {
+        // console.log(e.loaded);
+        closeLoader();
+    }
     if (data && !(data instanceof FormData)) xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send(data);
     xhr.onerror = function (e) { return handleError(e); }
@@ -143,12 +148,8 @@ function sendHttpRequest(method, url, data, callback) {
 // Validamos el caracter que forma parte del código 3166-2
 function validCharacter(c) {
     // Solo letras mayúsculas son permitidas
-    const re = /^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/; // No incluidas => I,Ñ,O
-    return re.test(c);
+    return /^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/.test(c);// No incluidas => I,Ñ,O
 }
-
-
-const backdrop = document.querySelector('.backdrop');
 
 function closeLoader() {
     if (backdrop) backdrop.style.display = "none";
