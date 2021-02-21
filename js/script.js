@@ -1,12 +1,15 @@
-const selectProvincia = document.querySelector('select#provincia');
-const selectLocalidad = document.querySelector('select#localidad');
-const backdrop = document.querySelector('.backdrop');
+'use strict';
+
+const d = document;
+const selectProvincia = d.querySelector('select#provincia');
+const selectLocalidad = d.querySelector('select#localidad');
+const backdrop = d.querySelector('.backdrop');
 
 // Variables globales
 var nombreProvincia, data;
 const url = 'server_processing.php';
 
-document.addEventListener('DOMContentLoaded', () => {
+d.addEventListener('DOMContentLoaded', () => {
     initChangeProvincia();
     initChangeLocalidad();
 });
@@ -33,7 +36,7 @@ function handleChangeProvincia(selectObj, objEvent) {
         if (selectedIndex > 0) {
             // Obtenemos el valor (caracter alfabético) de la opción seleccionada
             const char = selectObj.options[selectedIndex].value;
-            // Validamos el caracter alfabético
+            // Validamos el carácter alfabético
             if (validCharacter(char)) {
                 // Obtenemos el nombre de la Provincia para la muestra
                 nombreProvincia = selectObj.options[selectedIndex].textContent;
@@ -84,9 +87,9 @@ function handleChangeLocalidad(selectObj, objEvent) {
 // Crea opciones en objetos select
 function createOptions(data, selectObj) {
     let newOpt;
-    const fragment = document.createDocumentFragment();
+    const fragment = d.createDocumentFragment();
     data.forEach(obj => {
-        newOpt = document.createElement('option');
+        newOpt = d.createElement('option');
         newOpt.value = obj.id;
         newOpt.text = obj.nombre + " (" + obj.cp + ")";
         try {
@@ -106,7 +109,7 @@ function removeOptions(selectObj) {
 
 // Datos de salida
 function output(message) {
-    const output = document.querySelector('#output');
+    const output = d.querySelector('#output');
     if (output) output.innerHTML = message;
 }
 

@@ -16,20 +16,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Loader */
 #loader {
-    z-index: 1002;
     position: absolute;
-    top: 50%;
     left: 50%;
-    /* margin-right: -50%; */
-    margin: -50px 0 0 -50px;
-    transform: translate(-50%, -50%);
-    border: 16px solid #f3f3f3;
+    top: 50%;
+    z-index: 1002;
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+    border: 14px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 16px solid #3498db;
-    width: 128px;
-    height: 128px;
+    border-top: 14px solid #3498db;
     -webkit-animation: spin 2s linear infinite;
-    /* Safari */
     animation: spin 2s linear infinite;
 }
 
