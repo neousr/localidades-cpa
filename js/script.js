@@ -53,7 +53,7 @@ function loadLocalities(response) {
     if (response !== 'Error') {
         // Parseamos la respuesta del servidor en la variable data para uso posterior
         data = JSON.parse(response);
-        // Creamos opciones con los datos recuerados
+        // Creamos opciones con los datos recuperados
         createOptions(data, selectLocalidad);
     } else {
         console.log('Algo salió mal!');
@@ -113,7 +113,6 @@ function output(message) {
 // Enviar solicitud al servidor
 function sendHttpRequest(method, url, data, callback) {
     const xhr = getXhr();
-    openLoader();
     xhr.onreadystatechange = processRequest;
     function getXhr() {
         if (window.XMLHttpRequest) {
@@ -131,18 +130,19 @@ function sendHttpRequest(method, url, data, callback) {
             }
         }
     }
-    function handleError(e) {
-        console.log("Error: " + e + " Could not load url.");
-    }
     xhr.open(method, url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime());
-    xhr.onprogress = function (e) { }
+    xhr.onloadstart = function (e) {
+        openLoader();
+    }
     xhr.onloadend = function (e) {
         // console.log(e.loaded);
         closeLoader();
     }
     if (data && !(data instanceof FormData)) xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send(data);
-    xhr.onerror = function (e) { return handleError(e); }
+    xhr.onerror = function (e) {
+        console.log("Error: " + e + " Could not load url.");
+    }
 }
 
 // Validamos el caracter que forma parte del código 3166-2
@@ -152,7 +152,7 @@ function validCharacter(c) {
 }
 
 function closeLoader() {
-    if (backdrop) backdrop.style.display = "none";
+    if (backdrop) backdrop.style.cssText = "display: none;";
 }
 
 function openLoader() {
