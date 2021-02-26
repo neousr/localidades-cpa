@@ -52,7 +52,7 @@ $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/c
 curl_setopt_array($curl, $options);
 // https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex/
 // $regex = '/[\x00-\x1F\x80-\xFF]/';
-// Establecemos la sesión cURL y removemos todo lo que no se pueda imprimir
+// Establecemos la sesión cURL y removemos todos los caracteres no imprimibles
 $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
 // Cerramos la sesión cURL
 curl_close($curl);
