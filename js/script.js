@@ -128,6 +128,7 @@ function sendHttpRequest(method, url, data, callback) {
         if (xhr.readyState == xhr.DONE) {
             if (xhr.status == 200 && xhr.response != null) {
                 callback(xhr.response);
+                // console.log(xhr.getResponseHeader("Content-Type"));
             } else {
                 console.log("There was a problem retrieving the data: " + xhr.statusText);
             }
