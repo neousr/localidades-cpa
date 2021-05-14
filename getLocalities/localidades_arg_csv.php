@@ -7,7 +7,7 @@
 
 error_reporting(E_ALL | E_STRICT);
 mb_internal_encoding('UTF-8');
-
+echo "### Iniciando captura.\n";
 $time = microtime(true);
 
 $provincias = [
@@ -37,7 +37,7 @@ $provincias = [
     'Z' => 'Santa Cruz'
 ];
 
-define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-csv/');
+define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-csv-v2/');
 
 // Siempre eliminará el directorio por-provincia-csv y todos los archivos csv que contiene
 if (file_exists(DOCUMENT_ROOT)) {
@@ -67,24 +67,28 @@ $options = [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => "", // Todas
     CURLOPT_POST => 1,
-    CURLOPT_VERBOSE => 1 // Muestra en detalle lo que esta sucediendo.
+    CURLOPT_VERBOSE => 0 // 1 Muestra en detalle lo que esta sucediendo.
 ];
 
 foreach ($provincias as $key => $value) {
-    $options[CURLOPT_POSTFIELDS] = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
-    $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
-    curl_setopt_array($curl, $options);
-    // $regex = '/[\x00-\x1F\x80-\xFF]/'; // Hace lo mismo que ^print
-    $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
-    curl_close($curl);
-
-    $data = json_decode($response, true);
-    $fp = fopen(DOCUMENT_ROOT . $provincias[$key] . '.csv', 'w');
-    fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']);
-    foreach ($data as $campos) {
-        fputcsv($fp, $campos);
+    if ($key !== 'C') {
+        $options[CURLOPT_POSTFIELDS] = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
+        $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
+        curl_setopt_array($curl, $options);
+        // $regex = '/[\x00-\x1F\x80-\xFF]/'; // Hace lo mismo que ^print
+        $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
+        curl_close($curl);
+    
+        $data = json_decode($response, true);
+        $fp = fopen(DOCUMENT_ROOT . $value . '.csv', 'w');
+        // fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']);
+        fputcsv($fp, ['id_localidad', 'nombre', 'partido', 'municipio', 'codigo_postal', 'latitud', 'longitud']);
+        foreach ($data as $campos) {
+            fputcsv($fp, $campos);
+        }
+        fclose($fp);
+        echo "### Listo provincia: " . $value . "\n";
     }
-    fclose($fp);
 }
 
 $time = microtime(true) - $time;
