@@ -45,7 +45,7 @@ $options = [
     // Si pasamos un array a CURLOPT_POSTFIELDS codificará los datos como multipart/form-data, 
     // pero si pasamos una cadena URL-encoded codificará los datos como application/x-www-form-urlencoded. 
     CURLOPT_POSTFIELDS => $curlData,
-    CURLOPT_VERBOSE => 1 // Muestra lo que esta sucediendo en todo momento.
+    CURLOPT_VERBOSE => 0 // 1 Muestra lo que esta sucediendo en todo momento.
 ];
 
 // Iniciamos la sesión cURL

@@ -91,7 +91,7 @@ function createOptions(data, selectObj) {
     data.forEach(obj => {
         newOpt = d.createElement('option');
         newOpt.value = obj.id;
-        newOpt.text = obj.nombre + " (" + obj.cp + ")";
+        newOpt.text = obj.nombre + " (" + obj.partido + ")";
         try {
             fragment.add(newOpt);
         } catch (error) {
