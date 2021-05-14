@@ -7,7 +7,7 @@
 
 error_reporting(E_ALL | E_STRICT);
 mb_internal_encoding('UTF-8');
-
+echo "### Iniciando captura.\n";
 $time = microtime(true);
 
 $provincias = [
@@ -37,7 +37,7 @@ $provincias = [
     'Z' => 'Santa Cruz'
 ];
 
-define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-json/');
+define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-json-v2/');
 
 // Siempre eliminará el directorio por-provincia-json y todos los archivos json que contiene
 if (file_exists(DOCUMENT_ROOT)) {
@@ -67,21 +67,24 @@ $options = [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => "",
     CURLOPT_POST => 1,
-    CURLOPT_VERBOSE => 1 // Muestra en detalle lo que esta sucediendo.
+    CURLOPT_VERBOSE => 0 // 1 Muestra en detalle lo que esta sucediendo.
 ];
 
 foreach ($provincias as $key => $value) {
-    $response = '{"iso_31662":"AR-' . $key . '","provincia":"'. $provincias[$key] . '","localidades":';
-    $options[CURLOPT_POSTFIELDS] = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
-    $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
-    curl_setopt_array($curl, $options);
-    // $regex = '/[\x00-\x1F\x80-\xFF]/'; // '/[^\x20-\x7E]/';
-    $response .= preg_replace('/[[:^print:]]/', '', curl_exec($curl)) . '}';
-    curl_close($curl);
-
-    $fp = fopen(DOCUMENT_ROOT . $provincias[$key] . '.json', 'w');
-    fwrite($fp, $response);
-    fclose($fp);
+    if ($key !== 'C') {
+        $response = '{"iso_31662":"AR-' . $key . '","provincia":"'. $value . '","localidades":';
+        $options[CURLOPT_POSTFIELDS] = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
+        $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
+        curl_setopt_array($curl, $options);
+        // $regex = '/[\x00-\x1F\x80-\xFF]/'; // '/[^\x20-\x7E]/';
+        $response .= preg_replace('/[[:^print:]]/', '', curl_exec($curl)) . '}';
+        curl_close($curl);
+    
+        $fp = fopen(DOCUMENT_ROOT . $value . '.json', 'w');
+        fwrite($fp, $response);
+        fclose($fp);
+        echo "### Listo provincia: " . $value . "\n";
+    }
 }
 
 $time = microtime(true) - $time;
