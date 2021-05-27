@@ -1,4 +1,4 @@
-Enlaces utilizados
+Enlaces consultados
 
 https://www.php.net/manual/es/function.curl-setopt.php
 
@@ -7,12 +7,6 @@ https://html.spec.whatwg.org/multipage/form-elements.html#the-select-element
 https://www.w3.org/TR/WCAG20-TECHS/client-side-script.html#SCR19
 
 https://www.iteramos.com/pregunta/31833/php-como-quitar-todos-los-no-imprimibles-de-caracteres-en-una-cadena
-
-Devolver todos los archivos json al estado anterior
-git checkout -- /c/xampp/htdocs/arg-localities/por-provincia/*.json
-
-Devolver los últimos cambios hechos en el directorio arg-localities
-git checkout -- /c/xampp/htdocs/arg-localities/
 
 https://www.iso.org/obp/ui/#iso:code:3166:AR
 
