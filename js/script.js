@@ -3,11 +3,10 @@
 const d = document;
 const selectProvincia = d.querySelector('select#provincia');
 const selectLocalidad = d.querySelector('select#localidad');
-const backdrop = d.querySelector('.backdrop');
 
 // Variables globales
-var nombreProvincia, data;
-const url = 'server_processing.php';
+let nombreProvincia, data;
+const URL = 'server_processing.php';
 
 d.addEventListener('DOMContentLoaded', () => {
     initChangeProvincia();
@@ -22,7 +21,7 @@ function initChangeProvincia() {
 }
 
 // Manejar el cambio de Provincia
-function handleChangeProvincia(selectObj, objEvent) {
+function handleChangeProvincia(selectEl, objEvent) {
     if (selectLocalidad) {
         // Solo se habilitará cuando el índice seleccionado sea distinto de cero
         selectLocalidad.disabled = true;
@@ -31,21 +30,28 @@ function handleChangeProvincia(selectObj, objEvent) {
         // Removemos los datos de muestra, si los hay
         output('');
         // Obtenemos del select de provincias el índice de la opción seleccionada
-        const selectedIndex = selectObj.selectedIndex;
-        // Sí el índice es mayor a cero
-        if (selectedIndex > 0) {
+        const selectedIndex = selectEl.selectedIndex;
+        // Sí el índice es mayor a cero y menor a 25
+        if (0 < selectedIndex && selectedIndex < 25) {
             // Obtenemos el valor (caracter alfabético) de la opción seleccionada
-            const char = selectObj.options[selectedIndex].value;
-            // Validamos el carácter alfabético
-            if (validCharacter(char)) {
-                // Obtenemos el nombre de la Provincia para la muestra
-                nombreProvincia = selectObj.options[selectedIndex].textContent;
+            const char = selectEl.options[selectedIndex].value;
+            // Validamos el caracter que forma parte del código 3166-2, No incluidas => I,Ñ,O
+            if (/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/.test(char)) {
+                if (char === 'C') {
+                    data = [{ id: "5001", nombre: "CIUDAD AUTONOMA DE BUENOS AIRES", partido: "", cp: "" }];
+                    createOptions(data, selectLocalidad);
+                } else {
+                    // Obtenemos el nombre de la Provincia para la muestra
+                    nombreProvincia = selectEl.options[selectedIndex].innerText;
+                    // Enviar solicitud al servidor
+                    sendHttpRequest('POST', URL, "provincia=" + encodeURIComponent(char), response => {
+                        loadLocalities(response);
+                    });
+                }
                 // Habilitamos el select de localidades
                 selectLocalidad.disabled = false;
-                // Enviar solicitud al servidor
-                sendHttpRequest('POST', url, "provincia=" + encodeURIComponent(char), loadLocalities);
             } else {
-                alert('Lo sentimos, no podemos procesar su solicitud!');
+                console.log('Lo sentimos, no podemos procesar su solicitud!');
             }
         }
     }
@@ -73,8 +79,8 @@ function initChangeLocalidad() {
 }
 
 // Manejar el cambio de Localidad
-function handleChangeLocalidad(selectObj, objEvent) {
-    const selectedIndex = selectObj.selectedIndex;
+function handleChangeLocalidad(selectEl, objEvent) {
+    const selectedIndex = selectEl.selectedIndex;
     let message = '';
     if (selectedIndex > 0) {
         const obj = data[selectedIndex - 1];
@@ -85,26 +91,26 @@ function handleChangeLocalidad(selectObj, objEvent) {
 }
 
 // Crea opciones en objetos select
-function createOptions(data, selectObj) {
+function createOptions(data, selectEl) {
     let newOpt;
     const fragment = d.createDocumentFragment();
-    data.forEach(obj => {
+    data.forEach(el => {
         newOpt = d.createElement('option');
-        newOpt.value = obj.id;
-        newOpt.text = obj.nombre + " (" + obj.partido + ")";
+        newOpt.value = el.id;
+        newOpt.text = el.nombre + " (" + el.partido + ")";
         try {
             fragment.add(newOpt);
         } catch (error) {
             fragment.appendChild(newOpt);
         }
     });
-    selectObj.appendChild(fragment);
+    selectEl.appendChild(fragment);
 }
 
 // Remueve todas las opciones excepto el índice 0 (el marcador de posición)
-function removeOptions(selectObj) {
-    let len = selectObj.options.length;
-    while (len-- > 1) selectObj.remove(1);
+function removeOptions(selectEl) {
+    let len = selectEl.options.length;
+    while (len-- > 1) selectEl.remove(1);
 }
 
 // Datos de salida
@@ -134,31 +140,24 @@ function sendHttpRequest(method, url, data, callback) {
             }
         }
     }
+
+    const overlay = d.createElement("div");
+    overlay.id = "overlay";
+    const loader = d.createElement("div");
+    loader.setAttribute("id", "loader");
+
+    overlay.appendChild(loader);
+
     xhr.open(method, url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime());
     xhr.onloadstart = function (e) {
-        openLoader();
+        d.body.appendChild(overlay);
     }
     xhr.onloadend = function (e) {
-        // console.log(e.loaded);
-        closeLoader();
+        overlay.remove();
     }
     if (data && !(data instanceof FormData)) xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send(data);
     xhr.onerror = function (e) {
         console.log("Error: " + e + " Could not load url.");
     }
-}
-
-// Validamos el caracter que forma parte del código 3166-2
-function validCharacter(c) {
-    // Solo letras mayúsculas son permitidas
-    return /^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/.test(c);// No incluidas => I,Ñ,O
-}
-
-function closeLoader() {
-    if (backdrop) backdrop.style.cssText = "display: none;";
-}
-
-function openLoader() {
-    if (backdrop) backdrop.style.display = "block";
 }

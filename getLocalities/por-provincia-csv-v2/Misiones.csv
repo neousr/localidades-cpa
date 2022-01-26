@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 9374,"1 DE MAYO",CAINGUAS,,3362,-27.1660849,-55.0291653
 27564,"17 DE AGOSTO",GUARANI,,3338,,
 27556,"2 DE ABRIL",GUARANI,,3338,,

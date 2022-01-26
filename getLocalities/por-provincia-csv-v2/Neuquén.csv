@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 7711,ACHICO,"COLLON CURA",,8315,,
 7930,"AGRIO BALSA",PICUNCHES,"BAJADA DEL AGRIO",8351,,
 7673,"AGUADA CHACAY CO","CHOS MALAL",,8353,,

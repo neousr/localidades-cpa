@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 7114,"25 DE MAYO",PUELEN,"COLONIA 25 DE MAYO",8201,-37.7724609,-67.7145157
 6958,ABRAMO,HUCAL,ABRAMO,8212,-37.8955460,-63.8512567
 7180,"ADOLFO VAN PRAET",REALICO,"ADOLFO VAN PRAET",6212,-35.0179130,-64.0351179

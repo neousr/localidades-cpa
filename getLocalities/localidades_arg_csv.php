@@ -7,6 +7,11 @@
 
 error_reporting(E_ALL | E_STRICT);
 mb_internal_encoding('UTF-8');
+
+define('DEST_DIR', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-csv-v2/');
+define('FORM_DATA', 'action=localidades&localidad=none&calle=&altura=&provincia=');
+define('REQUEST_URL', 'https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
+
 echo "### Iniciando captura.\n";
 $time = microtime(true);
 
@@ -37,21 +42,11 @@ $provincias = [
     'Z' => 'Santa Cruz'
 ];
 
-define('DOCUMENT_ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-csv-v2/');
+// Removemos el directorio de salida si existe en la ruta DEST_DIR y todos los archivos que contiene
+remove_directory(DEST_DIR);
 
-// Siempre eliminará el directorio por-provincia-csv y todos los archivos csv que contiene
-if (file_exists(DOCUMENT_ROOT)) {
-    $files = scandir(DOCUMENT_ROOT);
-    if ( count($files) > 2 ) {
-        // Removemos todos los .csv
-        array_map('unlink', glob(DOCUMENT_ROOT . '*.csv'));
-    }
-    // Removemos el directorio
-    rmdir(DOCUMENT_ROOT);
-}
-
-// Creamos el directorio nuevamente
-mkdir(DOCUMENT_ROOT);
+// Creamos el directorio de salida
+mkdir(DEST_DIR);
 
 // Opciones cURL
 $options = [
@@ -70,26 +65,43 @@ $options = [
     CURLOPT_VERBOSE => 0 // 1 Muestra en detalle lo que esta sucediendo.
 ];
 
-foreach ($provincias as $key => $value) {
-    if ($key !== 'C') {
-        $options[CURLOPT_POSTFIELDS] = 'action=localidades&localidad=none&calle=&altura=&provincia=' . $key;
-        $curl = curl_init('https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
+$headers = ['id_localidad', 'nombre', 'partido', 'municipio', 'cp', 'latitud', 'longitud'];
+
+foreach ($provincias as $char => $provincia) {
+    // Evitamos solicitar las localidades de CABA
+    if ($char !== 'C') {
+        $options[CURLOPT_POSTFIELDS] = FORM_DATA . $char;
+        $curl = curl_init(REQUEST_URL);
         curl_setopt_array($curl, $options);
-        // $regex = '/[\x00-\x1F\x80-\xFF]/'; // Hace lo mismo que ^print
+        // Concatenamos la información proveniente del servidor despues de remover carácteres no imprimibles
         $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
         curl_close($curl);
-    
+
         $data = json_decode($response, true);
-        $fp = fopen(DOCUMENT_ROOT . $value . '.csv', 'w');
-        // fputcsv($fp, ['id_localidad', 'nombre', 'codigo_postal']);
-        fputcsv($fp, ['id_localidad', 'nombre', 'partido', 'municipio', 'codigo_postal', 'latitud', 'longitud']);
+        $fp = fopen(DEST_DIR . $provincia . '.csv', 'wb');
+        fputcsv($fp, $headers);
+
         foreach ($data as $campos) {
             fputcsv($fp, $campos);
         }
         fclose($fp);
-        echo "### Listo provincia: " . $value . "\n";
+        echo "### Listo provincia: " . $provincia . "\n";
     }
 }
 
 $time = microtime(true) - $time;
-echo "<p>Tiempo total de ejecución: " . round($time, 3) . " segundos.";
+echo "### Tiempo total: " . round($time, 3) . " segundos.\n";
+echo "### Finalizado el: " . date('j/n/Y H:i') . "\n";
+
+function remove_directory($directory) {
+    // Siempre eliminará el directorio en la ruta DEST_DIR y todos los archivos que contiene
+    if (file_exists($directory)) {
+        $files = scandir($directory);
+        if ( count($files) > 2 ) {
+            // Removemos todos los archivos que contiene el directorio
+            array_map('unlink', glob($directory . '*'));
+        }
+        // Removemos el directorio
+        rmdir($directory);
+    }
+}

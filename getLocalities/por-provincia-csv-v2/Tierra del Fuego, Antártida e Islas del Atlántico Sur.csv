@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 26540,"ASERRADERO ARROYO","RIO GRANDE",,9420,,
 26464,"BAHIA LAPATAIA",USHUAIA,,9410,,
 5026,"BASE AEREA TENIENTE MATIENZO","ANTARTIDA ARGENTINA","AREA SIN GOBIERNO",9411,,

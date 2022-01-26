@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 13193,"23 DE AGOSTO",LEDESMA,,4504,-23.7806454,-64.6566238
 13055,"ABDON CASTRO TOLAY",COCHINOCA,"ABDON CASTRO TOLAY",4641,-23.3362293,-66.0937119
 16656,"ABRA DE PEÑAS",YAVI,,4650,,

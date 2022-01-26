@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 15719,"9 DE JULIO","9 DE JULIO","9 DE JULIO",5417,-31.6697509,-68.3900416
 18854,ACERILLOS,IGLESIA,,5467,,
 15833,"ADAN QUIROGA",JACHAL,,5409,,

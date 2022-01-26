@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 9867,"2 DE JULIO","GENERAL ALVEAR",,3344,,
 19395,"8 DE DICIEMBRE",GOYA,,3450,,
 10223,"9 DE JULIO","SAN ROQUE","9 DE JULIO",3445,-28.8418349,-58.8280464

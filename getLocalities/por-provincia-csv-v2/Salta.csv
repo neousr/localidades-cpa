@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 21277,"20 DE FEBRERO","LA VIÑA",,4425,,
 11793,ABLOME,"LA VIÑA",,4421,,
 27811,"ABRA DE ARAGUYOC",IRUYA,IRUYA,4633,-22.7747986,-65.1433864

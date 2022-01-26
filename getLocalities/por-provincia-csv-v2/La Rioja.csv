@@ -1,4 +1,4 @@
-id_localidad,nombre,partido,municipio,codigo_postal,latitud,longitud
+id_localidad,nombre,partido,municipio,cp,latitud,longitud
 14103,"ABRA VERDE","ROSARIO VERA PEÑALOZA",,5470,-31.3835964,-66.6269531
 13891,"AGUA BLANCA","CASTRO BARROS","CASTRO BARROS",5301,-28.9669018,-67.0184326
 14104,"AGUA BLANCA","ROSARIO VERA PEÑALOZA",,5471,-31.7035573,-66.2855435
