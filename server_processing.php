@@ -59,7 +59,7 @@ if ( !$err ) {
         // Si la respuesta NO es un: Not Found
         if ( !preg_match("/html/i", $response) ) {
             header('Content-type: application/json');
-            sleep(3);
+            // sleep(3);
             echo $response;
             exit;
         }
