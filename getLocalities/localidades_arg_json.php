@@ -1,4 +1,9 @@
+#!/usr/bin/php
 <?php
+
+if (PHP_SAPI !== 'cli') {
+    return false;
+}
 
 /**
  * Este archivo se debe ejecutar de forma independiente para capturar
