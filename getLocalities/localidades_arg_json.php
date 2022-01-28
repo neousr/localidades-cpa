@@ -40,7 +40,7 @@ $provincias = [
     'S' => 'Santa Fe',
     'T' => 'Tucumán',
     'U' => 'Chubut',
-    'V' => 'Tierra del Fuego, Antártida e Islas del Atlántico Sur',
+    'V' => 'Tierra del Fuego',
     'W' => 'Corrientes',
     'X' => 'Córdoba',
     'Y' => 'Jujuy',
@@ -80,7 +80,7 @@ foreach ($provincias as $char => $provincia) {
         // Concatenamos la información proveniente del servidor despues de remover carácteres no imprimibles
         $response .= preg_replace('/[[:^print:]]/', '', curl_exec($curl)) . '}';
         curl_close($curl);
-        $fp = fopen(DEST_DIR . $provincia . '.json', 'wb');
+        $fp = fopen(DEST_DIR . str_replace(' ', '-', $provincia) . '.json', 'wb');
         fwrite($fp, $response);
         fclose($fp);
         echo "### Listo provincia: " . $provincia . "\n";

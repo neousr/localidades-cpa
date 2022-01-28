@@ -13,7 +13,7 @@ if (PHP_SAPI !== 'cli') {
 error_reporting(E_ALL | E_STRICT);
 mb_internal_encoding('UTF-8');
 
-define('DEST_DIR', str_replace('\\', '/', dirname(__FILE__)) . '/por-provincia-csv-v2/');
+define('DEST_DIR', str_replace('\\', '/', __DIR__) . '/por-provincia-csv-v2/');
 define('FORM_DATA', 'action=localidades&localidad=none&calle=&altura=&provincia=');
 define('REQUEST_URL', 'https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php');
 
@@ -40,7 +40,7 @@ $provincias = [
     'S' => 'Santa Fe',
     'T' => 'Tucumán',
     'U' => 'Chubut',
-    'V' => 'Tierra del Fuego, Antártida e Islas del Atlántico Sur',
+    'V' => 'Tierra del Fuego',
     'W' => 'Corrientes',
     'X' => 'Córdoba',
     'Y' => 'Jujuy',
@@ -78,12 +78,12 @@ foreach ($provincias as $char => $provincia) {
         $options[CURLOPT_POSTFIELDS] = FORM_DATA . $char;
         $curl = curl_init(REQUEST_URL);
         curl_setopt_array($curl, $options);
-        // Concatenamos la información proveniente del servidor despues de remover carácteres no imprimibles
+        // Removemos carácteres no imprimibles
         $response = preg_replace('/[[:^print:]]/', '', curl_exec($curl));
         curl_close($curl);
 
         $data = json_decode($response, true);
-        $fp = fopen(DEST_DIR . $provincia . '.csv', 'wb');
+        $fp = fopen(DEST_DIR . str_replace(' ', '-', $provincia) . '.csv', 'wb');
         fputcsv($fp, $headers);
 
         foreach ($data as $campos) {
