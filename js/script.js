@@ -35,8 +35,8 @@ function handleChangeProvincia(selectEl, objEvent) {
         if (0 < selectedIndex && selectedIndex < 25) {
             // Obtenemos el valor (caracter alfabético) de la opción seleccionada
             const char = selectEl.options[selectedIndex].value;
-            // Validamos el caracter que forma parte del código 3166-2, No incluidas => I,Ñ,O
-            if (/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/.test(char)) {
+            // Validamos el caracter que forma parte del código 3166-2, solo un carácter, no incluidos => I,Ñ,O
+            if (/^[A-HJ-NP-Z]$/.test(char)) {
                 if (char === 'C') {
                     nombreProvincia = "CIUDAD AUTONOMA DE BUENOS AIRES";
                     data = [{ id: "5001", nombre: "CIUDAD AUTONOMA DE BUENOS AIRES", partido: "", cp: "" }];
