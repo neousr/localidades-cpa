@@ -14,7 +14,7 @@ if (array_key_exists('provincia', $_POST)) {
 // Validación del carácter del código 3166-2
 if ( !$char ) {
     $err = 'El carácter del código 3166-2 es requerido.';
-} elseif ( !preg_match('/^[ABCDEFGHJKLMNPQRSTUVWXYZ]{1}$/', $char) ) {
+} elseif ( !preg_match('/^[A-HJ-NP-Z]$/', $char) ) {
     $err = 'El carácter del código 3166-2 no es válido.';
 }
 
